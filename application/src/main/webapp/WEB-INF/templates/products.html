@@ -64,7 +64,7 @@ li:hover {
 			</li>
 			
 			<li th:each="p: ${products}" class="notWebSaleable">
-				<h3 th:text="${p.product}" /> 
+				<h3 th:text="${p.product}" /></h3>
 				<a th:href="@{/order(productId=${p.product})}" class="not-active">Order</a>
 			</li>			
 		</ul>

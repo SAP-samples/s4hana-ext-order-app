@@ -3,10 +3,12 @@ package com.sap.cloud.extensibility.servlets;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDateTime;
+
 import java.util.Date;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,20 +40,21 @@ public class OrderConfirmServlet extends HttpServlet {
 	private static final String ERRORPAGE_HTML = "errorpage.html";
 
 	@Inject
-	private SalesOrder salesorder;
-
-	@Inject
-	private SalesOrderItem salesOrderItem;
-
-	@Inject
 	private SalesOrderService salesOrderService;
 
 	@Inject
-	private OneTimeCustomerRecordService oneTimeCustomerRecordService;
-
+	private OneTimeCustomerRecordService oneTimeCustomerRecordService; 
+	
+    
+	private SalesOrder salesorder ;
+	
+	
+    
+	private SalesOrderItem salesOrderItem;
 	// Method to handle GET method request.
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
 		boolean successful = true;
 		
 		TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
@@ -62,11 +65,11 @@ public class OrderConfirmServlet extends HttpServlet {
 
 			OneTimeCustomerOrder otcOrder = new OneTimeCustomerOrder();
 
-			LOGGER.info("request get parameter-->" + request.getParameter("firstName"));
-
 			setSalesOrderDetails(request);
-
-			salesorder.setCustomerPurchaseOrderDate(Calendar.getInstance());
+			
+			LocalDateTime customerPurchaseOrderDate = LocalDateTime.now();
+			
+			salesorder.setCustomerPurchaseOrderDate(customerPurchaseOrderDate );
 
 			// the result contains the newly created Sales Order number
 			SalesOrder soResult = salesOrderService.create(salesorder);
@@ -84,7 +87,9 @@ public class OrderConfirmServlet extends HttpServlet {
 			if (successful) {
 				
 				context.setVariable("createdSalesOrderId", soResult.getSalesOrder());
+				
 				context.setVariable("createdOtcRecordId", otcOrder.getId());
+				
 				engine.process("order-confirmation.html", context, response.getWriter());
 				
 			} else {
@@ -116,12 +121,15 @@ public class OrderConfirmServlet extends HttpServlet {
 
 	}
 
-	private void setSalesOrderDetails(HttpServletRequest request) throws ConfigurationException {
 
+	private void setSalesOrderDetails(HttpServletRequest request) throws ConfigurationException {
+		
+		
 		PropertiesConfiguration config = new PropertiesConfiguration();
 
 		config.load("application.properties");
-
+		salesorder = new SalesOrder();
+		salesOrderItem = new SalesOrderItem();
 		// Note in this sample we pre-define most of the sales order with static values
 		// due to simplicity...
 
@@ -136,7 +144,7 @@ public class OrderConfirmServlet extends HttpServlet {
 		salesorder.setPurchaseOrderByCustomer("Web Order " + new SimpleDateFormat("dd/MM/yyyy").format(new Date()));
 
 		salesOrderItem.setMaterial(request.getParameter("productId"));
-
+		
 		salesOrderItem.setRequestedQuantity(new BigDecimal(1.0));
 
 		salesorder.addItem(salesOrderItem);

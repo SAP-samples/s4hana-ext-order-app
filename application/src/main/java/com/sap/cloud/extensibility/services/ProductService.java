@@ -3,11 +3,12 @@ package com.sap.cloud.extensibility.services;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import org.slf4j.Logger;
 
-import com.sap.cloud.extensibility.model.CustomProduct;
 import com.sap.cloud.sdk.cloudplatform.logging.CloudLoggerFactory;
 import com.sap.cloud.sdk.odatav2.connectivity.ODataException;
 import com.sap.cloud.sdk.s4hana.datamodel.odata.namespaces.productmaster.Product;
@@ -16,6 +17,8 @@ import com.sap.cloud.sdk.s4hana.datamodel.odata.services.DefaultProductMasterSer
 /**
  * The Class ProductService.
  */
+
+@Stateless
 public class ProductService {
 
 	/** The default product master service. */
@@ -80,11 +83,11 @@ public class ProductService {
 
 	}
 	
-	public List<CustomProduct> findCustomerProductsByProductGroup(String productGroup) throws Exception {
+	public List<Product> findCustomerProductsByProductGroup(String productGroup) throws Exception {
 
 		List<Product> productsList = null;
 		
-		List<CustomProduct> customProductsList = new ArrayList<CustomProduct>();
+		List<Product> customProductsList = new ArrayList<Product>();
 		
 		try {
 
@@ -99,11 +102,8 @@ public class ProductService {
 				
 				logger.info("YY1_WebSaleable_PRD"+p.getCustomField("YY1_SaleableProduct_PRD"));
 				
-				customProductsList.add(CustomProduct.of(p));
+				customProductsList.add(p);
 				
-			}
-			for(CustomProduct cp: customProductsList) {
-				logger.info("cp websaleble::"+cp.getCustomWebSaleble());
 			}
 			
 			logger.info("customProductsList :: " + customProductsList);

@@ -41,9 +41,6 @@ public class OrderServlet extends HttpServlet {
 
 	@Inject
 	private ProductService productService;
-	
-	@Inject
-	private Product product;
 
 	private static final long serialVersionUID = 123456789L;
 
@@ -58,6 +55,8 @@ public class OrderServlet extends HttpServlet {
 		TemplateEngine engine = TemplateEngineUtil.getTemplateEngine(request.getServletContext());
 		
 		WebContext context = new WebContext(request, response, request.getServletContext());
+		
+		Product product =null;
 		
 		try {
 			String productId = request.getParameter(PRODUCT_ID);

@@ -164,7 +164,9 @@ public class OneTimeCustomerOrder extends VdmEntity<OneTimeCustomerOrder> {
 	        return values;
 	    }
 	 
-	    /* 
+	  
+
+		/* 
     	 * @see com.sap.cloud.sdk.s4hana.datamodel.odata.helper.VdmObject#fromMap(java.util.Map)
     	 */
     	@Override
